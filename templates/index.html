@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f4">
+  <title>班级事务 · 通知与任务</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6" height="6" rx="1.5"/><rect x="14.5" y="3.5" width="6" height="6" rx="1.5"/><rect x="3.5" y="14.5" width="6" height="6" rx="1.5"/><rect x="14.5" y="14.5" width="6" height="6" rx="1.5"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 3.5h13a1 1 0 0 1 1 1V21H6a3 3 0 0 1-3-3V6a2.5 2.5 0 0 1 2-2.5Z"/><path d="M3 17h16M7 7h8M7 10.5h5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2.5"/><path d="M7.5 3v5M16.5 3v5M3.5 11h17M8 15h2M14 15h2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8.5a6 6 0 0 0-12 0c0 7-2.5 7.5-2.5 9h17C20.5 16 18 15.5 18 8.5ZM9.5 21h5"/><path d="M12 2V1"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="m8 3 8 0-1 6 3 3v2H6v-2l3-3-1-6ZM12 14v7"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4V3Z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l5-1L20 8a2 2 0 0 0 0-3l-1-1a2 2 0 0 0-3 0L5 15l-1 5Z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 6h16M9 3h6M6 6l1 15h10l1-15M10 10v7M14 10v7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 5v5h-5M4 19v-5h5M6 6a8 8 0 0 1 13 2M18 18A8 8 0 0 1 5 16"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="班级事务首页">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span><strong>班级事务<span class="brand-dot">.</span></strong><small>CLASS BOARD</small></span>
+      </a>
+      <div class="workspace-label">班级工作台 <span>WORKSPACE</span></div>
+      <nav class="category-nav" aria-label="任务分类">
+        <button type="button" class="nav-item active" data-category="all" aria-current="page"><svg class="icon"><use href="#i-grid"/></svg><span>全部事项</span><span class="nav-count" data-count="all">0</span></button>
+        <button type="button" class="nav-item" data-category="homework"><svg class="icon"><use href="#i-book"/></svg><span>作业通知</span><span class="nav-count" data-count="homework">0</span></button>
+        <button type="button" class="nav-item" data-category="exam"><svg class="icon"><use href="#i-edit"/></svg><span>考试通知</span><span class="nav-count" data-count="exam">0</span></button>
+        <button type="button" class="nav-item" data-category="course"><svg class="icon"><use href="#i-bell"/></svg><span>课程通知</span><span class="nav-count" data-count="course">0</span></button>
+        <button type="button" class="nav-item" data-category="activity"><svg class="icon"><use href="#i-calendar"/></svg><span>活动通知</span><span class="nav-count" data-count="activity">0</span></button>
+        <button type="button" class="nav-item favorites-nav" id="favoritesNav" data-category="favorites"><svg class="icon"><use href="#i-bookmark"/></svg><span>我的收藏</span><span class="nav-count" id="favoritesCount" hidden>0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-foot"><span class="live-dot"></span>祝大家生日快乐，有生之年每一日都快乐</div>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <header class="topbar">
+        <div class="breadcrumb">班级空间 <span>/</span> <strong>信息看板</strong></div>
+        <div class="account-actions">
+          <span class="viewer-badge" id="viewerBadge"><span class="live-dot"></span><span id="viewerText">访客浏览</span></span>
+          <button class="button button-light button-sm" id="userLoginButton" type="button"><svg class="icon"><use href="#i-user"/></svg>普通用户登录</button>
+          <button class="button button-dark button-sm" id="loginButton" type="button"><svg class="icon"><use href="#i-user"/></svg>管理员登录</button>
+          <button class="button button-quiet button-sm" id="logoutButton" type="button" hidden>退出登录</button>
+        </div>
+      </header>
+
+      <section class="page-heading" aria-labelledby="pageTitle">
+        <div><div class="eyebrow">KEEP EVERYTHING IN SIGHT</div><h1 id="pageTitle">通知与任务<span class="heading-dot">.</span></h1><p>每一条重要通知，每一个截止时间，一目了然。</p></div>
+        <div class="heading-side"><div class="today-date"><svg class="icon"><use href="#i-calendar"/></svg><time id="todayDate"></time></div><button class="button button-dark" type="button" id="publishButton" hidden><svg class="icon"><use href="#i-plus"/></svg>发布任务</button></div>
+      </section>
+
+      <section class="stats-grid" aria-label="任务概览">
+        <div class="stat-item"><div><span class="stat-label">全部事项</span><div class="stat-number" id="statTotal">—</div><span class="stat-caption">集中查看，不再遗漏</span></div><span class="stat-icon stat-icon-teal"><svg class="icon"><use href="#i-grid"/></svg></span></div>
+        <div class="stat-item"><div><span class="stat-label">即将截止</span><div class="stat-number" id="statSoon">—<span class="stat-unit">项</span></div><span class="stat-caption">未来 24 小时内</span></div><span class="stat-icon stat-icon-orange"><svg class="icon"><use href="#i-clock"/></svg></span></div>
+        <div class="stat-item"><div><span class="stat-label">已过截止时间</span><div class="stat-number" id="statOverdue">—<span class="stat-unit">项</span></div><span class="stat-caption">保留记录，随时回看</span></div><span class="stat-icon stat-icon-gray"><svg class="icon"><use href="#i-calendar"/></svg></span></div>
+      </section>
+
+      <div class="content-grid">
+        <section class="task-section" aria-labelledby="listHeading">
+          <div class="section-heading"><div class="section-title"><h2 id="listHeading">全部事项</h2><span class="result-count" id="resultCount">0</span></div><span class="small-muted" id="syncStatus">正在连接…</span></div>
+          <div class="filter-bar">
+            <label class="search-field"><svg class="icon"><use href="#i-search"/></svg><span class="sr-only">搜索通知与任务</span><input id="searchInput" type="search" placeholder="搜索通知、任务或关键词" autocomplete="off"></label>
+            <label class="filter-select"><span class="sr-only">筛选截止状态</span><select id="statusFilter"><option value="all">全部状态</option><option value="soon">即将截止</option><option value="upcoming">尚未截止</option><option value="overdue">已过截止</option><option value="none">无截止时间</option></select></label>
+            <label class="filter-select sort-select"><span class="sr-only">任务排序</span><select id="sortSelect"><option value="deadline">截止时间优先</option><option value="newest">最新发布优先</option></select></label>
+          </div>
+          <div class="load-error" id="loadError" role="alert" hidden><span id="loadErrorText"></span><button class="text-button" id="retryButton" type="button">重新加载</button></div>
+          <div class="load-error" id="favoritesError" role="alert" hidden><span id="favoritesErrorText"></span><button class="text-button" id="retryFavoritesButton" type="button">重试收藏</button></div>
+          <div class="task-list" id="taskList" aria-live="polite" aria-busy="true"><div class="loading-state"><span class="spinner"></span><p>正在整理班级事务…</p></div></div>
+          <div class="list-foot"><button type="button" class="icon-button refresh-button" id="refreshButton" aria-label="刷新任务"><svg class="icon"><use href="#i-refresh"/></svg></button></div>
+        </section>
+
+        <aside class="right-rail" aria-label="截止提醒、最新发布与本周日期">
+          <section class="deadline-panel">
+            <div class="panel-eyebrow"><span class="live-dot"></span>DEADLINE TRACKER</div><div class="rail-heading"><h2>即将截止</h2><svg class="icon"><use href="#i-clock"/></svg></div>
+            <div id="nextDeadline"><div class="deadline-empty"><span class="empty-dash">—</span><p>暂无待截止任务</p><small>有了新的安排，会在这里提醒你。</small></div></div>
+          </section>
+          <section class="recent-panel" aria-labelledby="recentHeading">
+            <div class="panel-eyebrow"><span class="live-dot"></span>LATEST UPDATES</div>
+            <div class="rail-heading"><h2 id="recentHeading">最新发布</h2><span class="result-count" id="recentCount" aria-label="最近 24 小时发布数量">—</span></div>
+            <p class="recent-caption">最近 24 小时的新通知</p>
+            <div class="recent-list" id="recentPublished" aria-live="polite" aria-busy="true"><p class="recent-empty">正在加载最新通知…</p></div>
+          </section>
+          <section class="week-panel">
+            <div class="rail-heading"><h2>本周一览</h2><span class="small-muted" id="weekMonth"></span></div>
+            <p class="week-hint">点击日期，查看当天截止任务</p>
+            <div class="week-grid" id="weekGrid" role="group" aria-label="选择本周日期"></div>
+            <div class="week-legend"><span class="calendar-dot"></span>当天有任务截止<span class="week-timezone">北京时间</span></div>
+            <div class="week-agenda" role="region" aria-labelledby="weekDayHeading">
+              <div class="week-agenda-heading"><h3 id="weekDayHeading">当天截止任务</h3><span class="small-muted" id="weekTaskCount">—</span></div>
+              <div class="week-tasks" id="weekTasks" aria-live="polite" aria-busy="true"><p class="week-empty">正在加载当天任务…</p></div>
+            </div>
+          </section>
+          <div class="gentle-note"><span class="gentle-icon"><svg class="icon"><use href="#i-bell"/></svg></span><div><strong>让提醒留在眼前</strong><p>截止前 24 小时，任务会显示提醒。打开页面即可查看最新安排。</p></div></div>
+        </aside>
+      </div>
+      <footer class="page-footer"><span>CLASS BOARD <span class="footer-dot">·</span> 班级事务</span><span>有条不紊，每一天。</span></footer>
+    </main>
+  </div>
+
+  <dialog class="modal login-modal" id="loginDialog" aria-labelledby="loginTitle">
+    <button class="icon-button modal-close" data-close="loginDialog" type="button" aria-label="关闭登录窗口"><svg class="icon"><use href="#i-x"/></svg></button>
+    <span class="modal-symbol"><svg class="icon"><use href="#i-user"/></svg></span>
+    <div class="eyebrow" id="loginEyebrow">CLASS MEMBER</div>
+    <h2 id="loginTitle">普通用户登录</h2>
+    <p class="modal-description" id="loginDescription">登录个人账号，查看班级通知与截止提醒。</p>
+    <div class="auth-role-switch" role="group" aria-label="选择登录身份">
+      <button type="button" class="auth-role active" id="userLoginTab" aria-pressed="true">普通用户登录</button>
+      <button type="button" class="auth-role" id="adminLoginTab" aria-pressed="false">管理员登录</button>
+    </div>
+    <form id="loginForm">
+      <label class="form-field">用户名<input id="loginUsername" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="请输入用户名" maxlength="64" required></label>
+      <label class="form-field">密码<input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" maxlength="1024" required></label>
+      <p class="form-error" id="loginError" role="alert" hidden></p>
+      <button class="button button-dark button-full" id="loginSubmit" type="submit">登录</button>
+    </form>
+    <p class="auth-register-link" id="registerPrompt">还没有账号？<button type="button" class="text-button" id="openRegisterButton">注册普通用户</button></p>
+    <p class="form-hint login-hint" id="adminLoginHint" hidden>管理员账号由网站维护者创建，请使用已有管理员账号。</p>
+    <p class="form-hint login-hint">查看公开通知和截止时间，无需登录。</p>
+  </dialog>
+
+  <dialog class="modal login-modal" id="registerDialog" aria-labelledby="registerTitle">
+    <button class="icon-button modal-close" data-close="registerDialog" type="button" aria-label="关闭注册窗口"><svg class="icon"><use href="#i-x"/></svg></button>
+    <span class="modal-symbol"><svg class="icon"><use href="#i-user"/></svg></span>
+    <div class="eyebrow">JOIN THE CLASS BOARD</div>
+    <h2 id="registerTitle">注册普通用户</h2>
+    <p class="modal-description">创建自己的账号，注册成功后自动登录。</p>
+    <form id="registerForm">
+      <label class="form-field">用户名<input id="registerUsername" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="设置用户名" maxlength="64" aria-describedby="registerUsernameHint" required><span class="form-hint" id="registerUsernameHint">1–64 个字符，不能包含空白字符。</span></label>
+      <label class="form-field">密码<input id="registerPassword" name="password" type="password" autocomplete="new-password" placeholder="设置密码，至少 8 个字符" minlength="8" maxlength="1024" aria-describedby="registerPasswordHint" required><span class="form-hint" id="registerPasswordHint">8–1024 个字符，建议组合字母、数字和符号。</span></label>
+      <label class="form-field">确认密码<input id="registerPasswordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" placeholder="再次输入密码" minlength="8" maxlength="1024" required></label>
+      <p class="form-error" id="registerError" role="alert" hidden></p>
+      <button class="button button-dark button-full" id="registerSubmit" type="submit">注册并登录</button>
+    </form>
+    <p class="auth-register-link">已有账号？<button type="button" class="text-button" id="backToLoginButton">返回普通用户登录</button></p>
+    <p class="form-hint login-hint">注册后可管理自己的收藏；发布、编辑和删除通知仅对管理员开放。</p>
+  </dialog>
+
+  <dialog class="modal editor-modal" id="editorDialog" aria-labelledby="editorTitle">
+    <button class="icon-button modal-close" data-close="editorDialog" type="button" aria-label="关闭任务编辑窗口"><svg class="icon"><use href="#i-x"/></svg></button>
+    <div class="eyebrow">CLASS UPDATES</div><h2 id="editorTitle">发布新任务</h2><p class="modal-description">把重要安排写清楚，让每个人都能及时看到。</p>
+    <form id="taskForm"><label class="form-field">标题 <span class="required-mark">*</span><input id="taskTitle" name="title" placeholder="例如：本周高等数学作业" maxlength="100" required></label><div class="form-row"><label class="form-field">分类<select id="taskCategory" name="category"><option value="homework">作业通知</option><option value="exam">考试通知</option><option value="course">课程通知</option><option value="activity">活动通知</option></select></label><label class="form-field">截止时间 <span class="field-optional">选填 · 北京时间</span><input id="taskDeadline" name="deadline" type="datetime-local" min="2000-01-02T00:00" max="2100-12-31T23:59"></label></div><label class="form-field">具体内容 <span class="required-mark">*</span><textarea id="taskContent" name="content" rows="6" maxlength="10000" required placeholder="填写任务说明、活动地点、提交方式等内容…"></textarea></label><section class="attachment-editor" aria-labelledby="attachmentEditorHeading">
+      <div class="attachment-heading"><h3 id="attachmentEditorHeading">通知附件 <span class="field-optional">选填</span></h3><span class="small-muted" id="attachmentCount">0 / 5</span></div>
+      <label class="attachment-picker" for="taskAttachments"><svg class="icon"><use href="#i-plus"/></svg><span>选择 Word / PDF 附件</span><input id="taskAttachments" name="attachments" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple aria-describedby="attachmentHint"></label>
+      <p class="form-hint" id="attachmentHint">支持 PDF、DOC、DOCX，每个不超过 20 MB，最多 5 个。附件会随通知一起保存；移除已有附件后，保存修改才会生效。</p>
+      <ul class="attachment-list" id="editorAttachments" aria-live="polite" hidden></ul>
+    </section><label class="checkbox-field"><input id="taskPinned" type="checkbox" name="pinned"><span><strong>置顶这条事务</strong><small>优先显示在列表顶部</small></span><svg class="icon"><use href="#i-pin"/></svg></label><p class="form-error" id="taskError" role="alert" hidden></p><div class="modal-actions"><button type="button" class="button button-light" data-close="editorDialog">取消</button><button class="button button-dark" id="taskSubmit" type="submit">发布任务<svg class="icon"><use href="#i-arrow"/></svg></button></div></form>
+  </dialog>
+
+  <dialog class="modal detail-modal" id="detailDialog" aria-labelledby="detailTitle">
+    <button class="icon-button modal-close" data-close="detailDialog" type="button" aria-label="关闭任务详情"><svg class="icon"><use href="#i-x"/></svg></button><div id="detailBadges" class="detail-badges"></div><h2 id="detailTitle"></h2><div class="detail-meta" id="detailMeta"></div><div class="detail-deadline" id="detailDeadline"></div><div class="detail-content" id="detailContent"></div>
+    <section class="detail-attachments" id="detailAttachments" aria-labelledby="detailAttachmentsHeading" hidden><h3 id="detailAttachmentsHeading">通知附件</h3><ul class="attachment-list" id="detailAttachmentList"></ul></section>
+    <div class="detail-bottom">
+      <span class="small-muted" id="detailUpdated"></span>
+      <div class="detail-actions">
+        <button type="button" class="button button-light button-sm favorite-button" id="detailFavorite" aria-pressed="false"><svg class="icon"><use href="#i-bookmark"/></svg><span>收藏</span></button>
+        <div class="detail-admin" id="detailAdmin" hidden><button type="button" class="button button-light button-sm" id="detailEdit"><svg class="icon"><use href="#i-edit"/></svg>编辑</button><button type="button" class="button button-danger-quiet button-sm" id="detailDelete"><svg class="icon"><use href="#i-trash"/></svg>删除</button></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal attachment-preview-modal" id="attachmentPreviewDialog" aria-labelledby="attachmentPreviewTitle">
+    <button class="icon-button modal-close" data-close="attachmentPreviewDialog" type="button" aria-label="关闭附件预览"><svg class="icon"><use href="#i-x"/></svg></button>
+    <div class="eyebrow">ATTACHMENT PREVIEW</div><h2 id="attachmentPreviewTitle">附件预览</h2>
+    <div class="attachment-preview-toolbar"><span class="small-muted" id="attachmentPreviewMeta"></span><div class="attachment-actions"><a class="button button-light button-sm" id="attachmentPreviewOpen" target="_blank" rel="noopener">新窗口预览</a><a class="button button-dark button-sm" id="attachmentPreviewDownload" download>下载原文件</a></div></div>
+    <p class="preview-status" id="attachmentPreviewStatus" role="status">正在准备预览…</p><p class="form-error preview-error" id="attachmentPreviewError" role="alert" hidden></p>
+    <iframe id="attachmentPreviewFrame" class="attachment-preview-frame" title="附件预览" referrerpolicy="same-origin" hidden></iframe>
+    <p class="form-hint preview-hint">如果浏览器无法显示预览，可在新窗口打开或下载原文件查看。Word 预览的排版可能与原文件略有不同。</p>
+  </dialog>
+
+  <dialog class="modal confirm-modal" id="deleteDialog" aria-labelledby="deleteTitle"><span class="modal-symbol danger-symbol"><svg class="icon"><use href="#i-trash"/></svg></span><h2 id="deleteTitle">删除这条事务？</h2><p class="modal-description" id="deleteDescription"></p><p class="form-error" id="deleteError" role="alert" hidden></p><div class="modal-actions"><button type="button" class="button button-light" data-close="deleteDialog">保留</button><button type="button" class="button button-danger" id="confirmDelete">确认删除</button></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><svg class="icon"><use href="#i-check"/></svg><span id="toastText"></span></div>
+</body>
+</html>

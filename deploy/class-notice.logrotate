@@ -1,0 +1,16 @@
+# Current day plus six daily archives: approximately the last calendar week.
+# Kept in a subdirectory so /var/log/nginx/*.log does not match this file.
+/var/log/nginx/class-notice/access.log {
+    daily
+    rotate 6
+    maxage 7
+    missingok
+    ifempty
+    compress
+    delaycompress
+    create 0640 www-data adm
+    sharedscripts
+    postrotate
+        invoke-rc.d nginx rotate >/dev/null 2>&1
+    endscript
+}

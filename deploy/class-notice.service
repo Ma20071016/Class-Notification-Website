@@ -1,0 +1,25 @@
+[Unit]
+Description=Class Notice website
+After=network.target
+
+[Service]
+Type=simple
+User=class-notice
+Group=class-notice
+WorkingDirectory=/opt/class-notice/current
+EnvironmentFile=/etc/class-notice.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/class-notice/current/.venv/bin/gunicorn --config /opt/class-notice/current/gunicorn.conf.py app:create_app()
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=120
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/class-notice
+
+[Install]
+WantedBy=multi-user.target
